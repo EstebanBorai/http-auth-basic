@@ -1,0 +1,20 @@
+[package]
+name = "http-auth-basic"
+version = "0.1.0"
+authors = ["Esteban Borai <estebanborai@gmail.com>"]
+
+edition = "2018"
+license = "GPL-3.0"
+description = "HTTP Basic Authentication Scheme (RFC 7617 base64-encoded credentials) for Rust applications"
+readme = "README.md"
+repository = "https://github.com/EstebanBorai/http-auth-basic"
+categories = ["authentication", "encoding", "web-programming", "web-programming::http-server", "web-programming::http-client"]
+
+[lib]
+name = "http_auth_basic"
+path = "src/lib.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+base64 = "0.12.0"
