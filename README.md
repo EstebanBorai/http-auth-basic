@@ -1,14 +1,31 @@
 <div>
   <div align="center" style="display: block; text-align: center;">
-    <img src="https://via.placeholder.com/120" height="120" width="120" />
+    <img src="https://camo.githubusercontent.com/734a3468bce992fbc3b729562d41c92f4912c99a/68747470733a2f2f7777772e727573742d6c616e672e6f72672f7374617469632f696d616765732f727573742d6c6f676f2d626c6b2e737667" height="120" width="120" />
   </div>
   <h1 align="center">http-auth-basic</h1>
   <h4 align="center">HTTP Basic Authentication Scheme (RFC 7617 base64-encoded credentials) for Rust applications</h4>
 </div>
 
+<div align="center">
+
+  [![Crates.io](https://img.shields.io/crates/v/http-auth-basic.svg)](https://crates.io/crates/http-auth-basic)
+  [![Documentation](https://docs.rs/http-auth-basic/badge.svg)](https://docs.rs/http-auth-basic)
+
+</div>
+
 ## Description
 
 The "Basic" Hypertext Transfer Protocol (HTTP) authentication scheme, transmits credentials as user-id/password pairs, encoded using Base64.
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/EstebanBorai/http-auth-basic/main/assets/basic-auth-workflow.png" />
+</div>
+
+The server will gather the credentials from the base64 encoded header value, and will validate them
+to authenticate the user in question.
+
+This crate covers the credentials encoding and decoding. The `Credentials` struct provides two fields
+`user_id` and `password`, these are filled with they raw values.
 
 ## Installation
 
@@ -16,7 +33,7 @@ To install add the crate as follows to your dependencies list in your `Cargo.tom
 
 ```toml
 [dependencies]
-http-auth-basic = "0.1.0"
+http-auth-basic = "0.1.1"
 ```
 
 If you want to use a specific version, you must add the crate to your `Cargo.toml` as follows:
