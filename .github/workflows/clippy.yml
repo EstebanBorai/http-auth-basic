@@ -1,4 +1,5 @@
-name: CI
+name: clippy/fmt
+
 on:
   pull_request:
   push:
@@ -6,17 +7,12 @@ on:
       - main
 
 jobs:
-  ci:
+  clippy_fmt:
+    name: Runs Clippy and Fmt
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust:
-          - stable
-          - beta
-          - nightly
-
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - uses: actions-rs/toolchain@v1
         with:
@@ -25,23 +21,13 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - name: build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-
-      - name: test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-
-      - name: fmt
+      - name: Run fmt
         uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: --all -- --check
 
-      - name: clippy
+      - name: Run clippy
         uses: actions-rs/cargo@v1
         with:
           command: clippy
