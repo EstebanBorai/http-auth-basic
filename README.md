@@ -10,6 +10,7 @@
 
   [![Crates.io](https://img.shields.io/crates/v/http-auth-basic.svg)](https://crates.io/crates/http-auth-basic)
   [![Documentation](https://docs.rs/http-auth-basic/badge.svg)](https://docs.rs/http-auth-basic)
+  ![Build](https://github.com/EstebanBorai/http-auth-basic/workflows/build/badge.svg)
   ![Lint](https://github.com/EstebanBorai/http-auth-basic/workflows/clippy/fmt/badge.svg)
   ![Tests](https://github.com/EstebanBorai/http-auth-basic/workflows/tests/badge.svg)
 
