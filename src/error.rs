@@ -1,50 +1,34 @@
 use base64::DecodeError;
-use std::fmt;
 use std::string::FromUtf8Error;
+use thiserror::Error as ThisError;
 
 /// Authorization Header Error
-#[derive(Debug)]
-pub enum AuthBasicError {
+#[derive(Debug, ThisError)]
+pub enum Error {
     /// The HTTP Authorization header value is invalid
+    #[error("Invalid authorization header provided")]
     InvalidAuthorizationHeader,
     /// The HTTP Authorization header contains a valid
     /// value but the scheme is other than `Basic`
+    #[error("Inavlid authorization header scheme, {0}")]
     InvalidScheme(String),
     /// The value expected as a base64 encoded `String` is not
     /// encoded correctly
+    #[error("Invalid Base64 provided, {0}")]
     InvalidBase64Value(String),
     /// The provided binary is not a valid UTF-8 character
+    #[error("The provided value is not a valid UTF-8")]
     InvalidUTF8Value(String),
 }
 
-impl fmt::Display for AuthBasicError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            AuthBasicError::InvalidAuthorizationHeader => write!(
-                f,
-                "Invalid value provided for the HTTP Authorization header"
-            ),
-            AuthBasicError::InvalidScheme(scheme) => {
-                write!(f, "The scheme provided ({}) is not Basic", scheme)
-            }
-            AuthBasicError::InvalidBase64Value(message) => {
-                write!(f, "The value have an invalid base64 encoding\n{}", message)
-            }
-            AuthBasicError::InvalidUTF8Value(message) => {
-                write!(f, "Invalid UTF-8 Provided\n{}", message)
-            }
-        }
-    }
-}
-
-impl From<DecodeError> for AuthBasicError {
+impl From<DecodeError> for Error {
     fn from(decode_error: DecodeError) -> Self {
-        AuthBasicError::InvalidBase64Value(decode_error.to_string())
+        Self::InvalidBase64Value(decode_error.to_string())
     }
 }
 
-impl From<FromUtf8Error> for AuthBasicError {
+impl From<FromUtf8Error> for Error {
     fn from(utf8_err: FromUtf8Error) -> Self {
-        AuthBasicError::InvalidUTF8Value(utf8_err.to_string())
+        Self::InvalidUTF8Value(utf8_err.to_string())
     }
 }

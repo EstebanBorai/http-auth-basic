@@ -1,4 +1,4 @@
-use crate::error::AuthBasicError;
+use crate::error::Error;
 
 /// A `struct` to represent the `user_id` and `password` fields
 /// from an _Authorization Basic_ header value
@@ -31,7 +31,7 @@ impl Credentials {
 
     /// Create a `Credentials` instance from a base64 `String`
     /// which must encode user credentials as `username:password`
-    pub fn decode(auth_header_value: String) -> Result<Self, AuthBasicError> {
+    pub fn decode(auth_header_value: String) -> Result<Self, Error> {
         let decoded = base64::decode(auth_header_value)?;
         let as_utf8 = String::from_utf8(decoded)?;
         let parts = as_utf8.split(':');
@@ -46,7 +46,7 @@ impl Credentials {
             return Ok(credentials);
         }
 
-        Err(AuthBasicError::InvalidAuthorizationHeader)
+        Err(Error::InvalidAuthorizationHeader)
     }
 
     /// Encode a `Credentials` instance into a base64 `String`
@@ -58,21 +58,21 @@ impl Credentials {
 
     /// Creates a `Credentials` instance from an HTTP Authorization header
     /// which schema is a valid `Basic` HTTP Authorization Schema.
-    pub fn from_header(auth_header: String) -> Result<Credentials, AuthBasicError> {
+    pub fn from_header(auth_header: String) -> Result<Credentials, Error> {
         // check if its a valid basic auth header
         let parts = auth_header.split(' ');
         let parts: Vec<String> = parts.map(|part| part.to_string()).collect();
 
         if parts.len() > 2 {
             // invalid authorization token received
-            return Err(AuthBasicError::InvalidAuthorizationHeader);
+            return Err(Error::InvalidAuthorizationHeader);
         }
 
         if let Some(auth_type) = parts.get(0) {
             // check the provided authorization header
             // to be a "Basic" authorization header
             if auth_type.to_lowercase() != "basic" {
-                return Err(AuthBasicError::InvalidScheme(auth_type.to_string()));
+                return Err(Error::InvalidScheme(auth_type.to_string()));
             }
         }
 
@@ -82,7 +82,7 @@ impl Credentials {
             return Ok(credentials);
         }
 
-        Err(AuthBasicError::InvalidAuthorizationHeader)
+        Err(Error::InvalidAuthorizationHeader)
     }
 
     /// Creates a HTTP Authorization header value for the basic schema
