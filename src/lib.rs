@@ -48,6 +48,15 @@ mod tests {
     }
 
     #[test]
+    fn it_creates_credentials_from_value_with_colon() {
+        let auth_header_value = String::from("dXNlcm5hbWU6cGFzczp3b3Jk");
+        let credentials = Credentials::decode(auth_header_value).unwrap();
+
+        assert_eq!(credentials.user_id, String::from("username"));
+        assert_eq!(credentials.password, String::from("pass:word"));
+    }
+
+    #[test]
     fn it_encodes_credentials() {
         let credentials = Credentials::new("username", "password");
         let credentials = credentials.encode();
@@ -65,10 +74,27 @@ mod tests {
     }
 
     #[test]
+    fn it_creates_credentials_from_header_value_with_colon() {
+        let auth_header_value = String::from("Basic dXNlcm5hbWU6cGFzczp3b3Jk");
+        let credentials = Credentials::from_header(auth_header_value).unwrap();
+
+        assert_eq!(credentials.user_id, String::from("username"));
+        assert_eq!(credentials.password, String::from("pass:word"));
+    }
+
+    #[test]
     fn it_creates_header_value() {
         let credentials = Credentials::new("username", "password");
         let credentials = credentials.as_http_header();
 
         assert_eq!(String::from("Basic dXNlcm5hbWU6cGFzc3dvcmQ="), credentials);
+    }
+
+    #[test]
+    fn it_creates_header_value_with_colon() {
+        let credentials = Credentials::new("username", "pass:word");
+        let credentials = credentials.as_http_header();
+
+        assert_eq!(String::from("Basic dXNlcm5hbWU6cGFzczp3b3Jk"), credentials);
     }
 }
