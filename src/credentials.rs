@@ -35,7 +35,12 @@ impl Credentials {
         let decoded = base64::decode(auth_header_value)?;
         let as_utf8 = String::from_utf8(decoded)?;
         let parts = as_utf8.split(':');
-        let parts: Vec<String> = parts.map(|p| p.to_string()).collect();
+        let mut parts: Vec<String> = parts.map(|p| p.to_string()).collect();
+
+        // RFC 2617 provides support for passwords with colons
+        if parts.len() > 2 {
+            parts = vec![parts[0].clone(), parts[1..].join(":")];
+        }
 
         if parts.len() == 2 {
             let credentials = Credentials {
