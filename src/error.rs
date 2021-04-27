@@ -14,7 +14,7 @@ pub enum AuthBasicError {
     /// encoded correctly
     InvalidBase64Value(String),
     /// The provided binary is not a valid UTF-8 character
-    InvalidUTF8Value(String),
+    InvalidUtf8Value(String),
 }
 
 impl fmt::Display for AuthBasicError {
@@ -30,7 +30,7 @@ impl fmt::Display for AuthBasicError {
             AuthBasicError::InvalidBase64Value(message) => {
                 write!(f, "The value have an invalid base64 encoding\n{}", message)
             }
-            AuthBasicError::InvalidUTF8Value(message) => {
+            AuthBasicError::InvalidUtf8Value(message) => {
                 write!(f, "Invalid UTF-8 Provided\n{}", message)
             }
         }
@@ -45,6 +45,6 @@ impl From<DecodeError> for AuthBasicError {
 
 impl From<FromUtf8Error> for AuthBasicError {
     fn from(utf8_err: FromUtf8Error) -> Self {
-        AuthBasicError::InvalidUTF8Value(utf8_err.to_string())
+        AuthBasicError::InvalidUtf8Value(utf8_err.to_string())
     }
 }

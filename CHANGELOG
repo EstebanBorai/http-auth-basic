@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Issue where passwords containing a colon caused `AuthBasicError::InvalidAuthorizationHeader` (https://github.com/EstebanBorai/http-auth-basic/pull/3)
 
+#### Braking Change
+- Replace `InvalidUTF8Value` with `InvalidUtf8Value` to satisfy Rust conventions
+
 ### Added
 - Support for RFC 2617 spec (https://github.com/EstebanBorai/http-auth-basic/pull/3)
 
