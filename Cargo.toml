@@ -5,7 +5,7 @@ authors = ["Esteban Borai <estebanborai@gmail.com>"]
 
 edition = "2018"
 license = "GPL-3.0"
-description = "HTTP Basic Authentication Scheme (RFC 7617 base64-encoded credentials) for Rust applications"
+description = "HTTP Basic Authentication Scheme (RFC 7617 and RFC 2617 compilant, base64-encoded credentials) for Rust applications"
 readme = "README.md"
 repository = "https://github.com/EstebanBorai/http-auth-basic"
 categories = ["authentication", "encoding", "web-programming", "web-programming::http-server", "web-programming::http-client"]

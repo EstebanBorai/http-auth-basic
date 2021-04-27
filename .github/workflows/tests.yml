@@ -1,22 +1,29 @@
-name: tests
-
+name: test
 on:
   pull_request:
   push:
     branches:
       - main
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Build
-      run: cargo build --verbose
+      - name: Cache .cargo and target
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo
+            ./target
+          key: ${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
+            ${{ runner.os }}-cargo-test
 
-    - name: Test
-      run: cargo test --verbose
+      - name: cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
