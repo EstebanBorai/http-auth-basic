@@ -4,7 +4,7 @@ version = "0.1.3"
 authors = ["Esteban Borai <estebanborai@gmail.com>"]
 
 edition = "2018"
-license = "GPL-3.0"
+license = "MIT OR Apache-2.0"
 description = "HTTP Basic Authentication Scheme (RFC 7617 and RFC 2617 compilant, base64-encoded credentials) for Rust applications"
 readme = "README.md"
 repository = "https://github.com/EstebanBorai/http-auth-basic"
