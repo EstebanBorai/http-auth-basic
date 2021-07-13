@@ -38,15 +38,6 @@ to authenticate the user in question.
 This crate covers the credentials encoding and decoding. The `Credentials` struct provides two fields
 `user_id` and `password`, these are filled with they raw values.
 
-## Installation
-
-To install add the crate as follows to your dependencies list in your `Cargo.toml`.
-
-```toml
-[dependencies]
-http-auth-basic = "0.1"
-```
-
 ## Usage
 
 Decoding a basic authorization value and creating a `Credentials` struct
@@ -92,4 +83,4 @@ Every contribution to this project is welcome! Feel free to open a pull request 
 
 ## License
 
-Licensed under the GNU General Public License.
+Distributed under the terms of both the MIT license and the Apache License (Version 2.0)
