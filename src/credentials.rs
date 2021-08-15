@@ -36,21 +36,10 @@ impl Credentials {
     pub fn decode(auth_header_value: String) -> Result<Self, AuthBasicError> {
         let decoded = base64::decode(auth_header_value)?;
         let as_utf8 = String::from_utf8(decoded)?;
-        let parts = as_utf8.split(':');
-        let mut parts: Vec<String> = parts.map(|p| p.to_string()).collect();
 
         // RFC 2617 provides support for passwords with colons
-        if parts.len() > 2 {
-            parts = vec![parts[0].clone(), parts[1..].join(":")];
-        }
-
-        if parts.len() == 2 {
-            let credentials = Credentials {
-                user_id: parts.get(0).unwrap().to_string(),
-                password: parts.get(1).unwrap().to_string(),
-            };
-
-            return Ok(credentials);
+        if let Some((user_id, password)) = as_utf8.split_once(':') {
+            return Ok(Self::new(user_id, password));
         }
 
         Err(AuthBasicError::InvalidAuthorizationHeader)
@@ -67,24 +56,19 @@ impl Credentials {
     /// which schema is a valid `Basic` HTTP Authorization Schema.
     pub fn from_header(auth_header: String) -> Result<Credentials, AuthBasicError> {
         // check if its a valid basic auth header
-        let parts = auth_header.split(' ');
-        let parts: Vec<String> = parts.map(|part| part.to_string()).collect();
+        if let Some((auth_type, encoded_credentials)) = auth_header.split_once(' ') {
+            if encoded_credentials.contains(' ') {
+                // Invalid authorization token received
+                return Err(AuthBasicError::InvalidAuthorizationHeader);
+            }
 
-        if parts.len() > 2 {
-            // invalid authorization token received
-            return Err(AuthBasicError::InvalidAuthorizationHeader);
-        }
-
-        if let Some(auth_type) = parts.get(0) {
-            // check the provided authorization header
+            // Check the provided authorization header
             // to be a "Basic" authorization header
             if auth_type.to_lowercase() != "basic" {
                 return Err(AuthBasicError::InvalidScheme(auth_type.to_string()));
             }
-        }
 
-        if let Some(encoded_credentials) = parts.get(1) {
-            let credentials = Credentials::decode(encoded_credentials.clone())?;
+            let credentials = Credentials::decode(encoded_credentials.to_string())?;
 
             return Ok(credentials);
         }

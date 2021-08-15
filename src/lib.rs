@@ -120,4 +120,37 @@ mod tests {
         assert_eq!(credentials.user_id, String::from("username"));
         assert_eq!(credentials.password, String::from("password"));
     }
+
+    #[test]
+    fn from_header_returns_err_when_input_has_no_whitespace() {
+        let auth_header_value = String::from("BasicdXNlcm5hbWU6OnBhc3M6d29yZDo=");
+        let credentials = Credentials::from_header(auth_header_value);
+
+        assert!(credentials.is_err());
+    }
+
+    #[test]
+    fn from_header_returns_err_when_input_contains_multiple_whitespaces() {
+        let auth_header_value = String::from("Basic dXNlcm5hbWU6On Bhc3M6d29yZDo=");
+        let credentials = Credentials::from_header(auth_header_value);
+
+        assert!(credentials.is_err());
+    }
+
+    #[test]
+    fn from_header_returns_err_when_input_is_not_basic_auth() {
+        let auth_header_value = String::from("Bearer dXNlcm5hbWU6OnBhc3M6d29yZDo=");
+        let credentials = Credentials::from_header(auth_header_value);
+
+        assert!(credentials.is_err());
+    }
+
+    #[test]
+    fn decode_returns_err_when_input_has_no_colons() {
+        // base64::encode("usernamepassword") = "dXNlcm5hbWVwYXNzd29yZA==""
+        let auth_header_value = String::from("dXNlcm5hbWVwYXNzd29yZA==");
+        let credentials = Credentials::from_header(auth_header_value);
+
+        assert!(credentials.is_err());
+    }
 }
