@@ -36,6 +36,8 @@ pub use error::*;
 
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
+
     use super::*;
 
     #[test]
@@ -99,5 +101,23 @@ mod tests {
             String::from("Basic dXNlcm5hbWU6OnBhc3M6d29yZDo="),
             credentials
         );
+    }
+
+    #[test]
+    fn it_creates_credentials_from_str_value() {
+        let auth_header_value_str = "dXNlcm5hbWU6cGFzc3dvcmQ=";
+        let credentials = Credentials::from_str(auth_header_value_str).unwrap();
+
+        assert_eq!(credentials.user_id, String::from("username"));
+        assert_eq!(credentials.password, String::from("password"));
+    }
+
+    #[test]
+    fn it_creates_credentials_from_str_header() {
+        let auth_header_str = "Basic dXNlcm5hbWU6cGFzc3dvcmQ=";
+        let credentials = Credentials::from_str(auth_header_str).unwrap();
+
+        assert_eq!(credentials.user_id, String::from("username"));
+        assert_eq!(credentials.password, String::from("password"));
     }
 }
