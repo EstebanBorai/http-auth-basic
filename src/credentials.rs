@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::error::AuthBasicError;
 
 /// A `struct` to represent the `user_id` and `password` fields
@@ -29,7 +31,7 @@ impl Credentials {
         }
     }
 
-    /// Create a `Credentials` instance from a base64 `String`
+    /// Creates a `Credentials` instance from a base64 `String`
     /// which must encode user credentials as `username:password`
     pub fn decode(auth_header_value: String) -> Result<Self, AuthBasicError> {
         let decoded = base64::decode(auth_header_value)?;
@@ -96,5 +98,21 @@ impl Credentials {
         let as_base64 = self.encode();
 
         format!("Basic {}", as_base64)
+    }
+}
+
+impl FromStr for Credentials {
+    type Err = AuthBasicError;
+
+    /// Creates a `Credentials` instance from either a base64 `&str`
+    /// which must encode user credentials as `username:password`
+    /// or an HTTP Authorization header which schema is a
+    /// valid `Basic` HTTP Authorization Schema.
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s.contains(' ') {
+            return Self::from_header(s.into());
+        }
+
+        Self::decode(s.into())
     }
 }
