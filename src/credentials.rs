@@ -1,5 +1,7 @@
 use std::str::FromStr;
 
+use base64::{prelude::BASE64_STANDARD, Engine};
+
 use crate::error::AuthBasicError;
 
 /// A `struct` to represent the `user_id` and `password` fields
@@ -34,7 +36,7 @@ impl Credentials {
     /// Creates a `Credentials` instance from a base64 `String`
     /// which must encode user credentials as `username:password`
     pub fn decode(auth_header_value: String) -> Result<Self, AuthBasicError> {
-        let decoded = base64::decode(auth_header_value)?;
+        let decoded = BASE64_STANDARD.decode(auth_header_value)?;
         let as_utf8 = String::from_utf8(decoded)?;
 
         // RFC 2617 provides support for passwords with colons
@@ -49,7 +51,7 @@ impl Credentials {
     pub fn encode(&self) -> String {
         let credentials = format!("{}:{}", self.user_id, self.password);
 
-        base64::encode(credentials.as_bytes())
+        BASE64_STANDARD.encode(credentials.as_bytes())
     }
 
     /// Creates a `Credentials` instance from an HTTP Authorization header
