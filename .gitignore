@@ -2,6 +2,8 @@
 #######################
 .vscode/
 /target
+# Not needed in a library.
+Cargo.lock
 
 # Compiled source #
 ###################

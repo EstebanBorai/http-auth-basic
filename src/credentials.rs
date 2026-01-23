@@ -1,12 +1,12 @@
-use std::str::FromStr;
+use std::{fmt, str::FromStr};
 
-use base64::{prelude::BASE64_STANDARD, Engine};
+use base64::{Engine, prelude::BASE64_STANDARD};
 
 use crate::error::AuthBasicError;
 
 /// A `struct` to represent the `user_id` and `password` fields
 /// from an _Authorization Basic_ header value
-#[derive(Debug, PartialEq)]
+#[derive(PartialEq)]
 pub struct Credentials {
     pub user_id: String,
     pub password: String,
@@ -100,5 +100,15 @@ impl FromStr for Credentials {
         }
 
         Self::decode(s.into())
+    }
+}
+
+/// Debug implementation never prints out the password.
+impl fmt::Debug for Credentials {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Credentials")
+            .field("user_id", &self.user_id)
+            .field("password", &"REDACTED")
+            .finish()
     }
 }

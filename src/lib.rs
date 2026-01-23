@@ -153,4 +153,16 @@ mod tests {
 
         assert!(credentials.is_err());
     }
+
+    #[test]
+    fn debug_redacts_password() {
+        let password = "secret teapot";
+        let credentials = Credentials::new("username", password);
+
+        let debugged = format!("{credentials:?}");
+        let pretty = format!("{credentials:#?}");
+
+        assert!(!debugged.contains(password));
+        assert!(!pretty.contains(password));
+    }
 }

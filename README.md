@@ -8,7 +8,7 @@
   </div>
   <h1 align="center">http-auth-basic</h1>
   <h4 align="center">
-    HTTP Basic Authentication Scheme (RFC 7617 and RFC 2617 compilant, base64-encoded credentials) for Rust applications
+    HTTP Basic Authentication Scheme (RFC 7617 and RFC 2617 compliant, base64-encoded credentials) for Rust applications
   </h4>
 </div>
 

@@ -1,11 +1,11 @@
 [package]
 name = "http-auth-basic"
-version = "0.3.5"
+version = "0.3.6"
 authors = ["Esteban Borai <estebanborai@gmail.com>"]
 
-edition = "2021"
+edition = "2024"
 license = "MIT OR Apache-2.0"
-description = "HTTP Basic Authentication Scheme (RFC 7617 and RFC 2617 compilant, base64-encoded credentials) for Rust applications"
+description = "HTTP Basic Authentication Scheme (RFC 7617 and RFC 2617 compliant, base64-encoded credentials) for Rust applications"
 readme = "README.md"
 repository = "https://github.com/EstebanBorai/http-auth-basic"
 categories = ["authentication", "encoding", "web-programming", "web-programming::http-server", "web-programming::http-client"]
