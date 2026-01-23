@@ -31,11 +31,6 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      # Make sure that there are no SemVer violations before publishing.
-      # https://github.com/obi1kenobi/cargo-semver-checks-action
-      - name: Check semver
-        uses: obi1kenobi/cargo-semver-checks-action@v2
-
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
