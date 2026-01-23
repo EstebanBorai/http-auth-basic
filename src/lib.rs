@@ -162,7 +162,13 @@ mod tests {
         let debugged = format!("{credentials:?}");
         let pretty = format!("{credentials:#?}");
 
+        // The password should not appear in the prints.
         assert!(!debugged.contains(password));
         assert!(!pretty.contains(password));
+
+        // It should be replaced with this:
+        const REDACTED: &str = "REDACTED";
+        assert!(debugged.contains(REDACTED));
+        assert!(pretty.contains(REDACTED));
     }
 }
