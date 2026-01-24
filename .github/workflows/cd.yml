@@ -1,0 +1,116 @@
+name: Continuous Delivery
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: choice
+        required: true
+        description: 'Version number to bump'
+        options:
+          - patch
+          - minor
+          - major
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  publish-dry-run:
+    name: "Runs cargo publish --dry-run"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Setup Cargo Binstall
+        uses: cargo-bins/cargo-binstall@main
+
+      - name: Install Rust Binaries
+        run: cargo binstall -y --force cargo-tag
+
+      - name: Build (debug)
+        run: cargo b
+
+      - name: publish crate
+        run: |
+          cargo package --list --allow-dirty
+          cargo publish --dry-run --allow-dirty
+
+  release:
+    name: Create Release
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Setup Cargo Binstall
+        uses: cargo-bins/cargo-binstall@main
+
+      - name: Install Rust Binaries
+        run: cargo binstall -y --force cargo-tag
+
+      - name: Retrieve Git Commit SHA
+        run: echo "GIT_COMMIT_SHA7=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+
+      - name: Commit Version Bump
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "CRATE_VERSION=$(cargo tag -p=v ${{ inputs.version }})" >> $GITHUB_ENV
+          else
+            echo "CRATE_VERSION=$(cargo tag -p=v prerelease pre.$GIT_COMMIT_SHA7)" >> $GITHUB_ENV
+          fi
+          git push origin main --follow-tags
+
+      - name: Login to Crates.io
+        run: cargo login ${CRATES_IO_TOKEN}
+        env:
+          CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+
+      - name: Publish crate
+        run: |
+          cargo package --list --allow-dirty
+          cargo publish --allow-dirty
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Create Release with GitHub CLI
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Determine if this is a pre-release
+          IS_PRERELEASE=""
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            IS_PRERELEASE="--prerelease"
+          fi
+
+          # Create the release
+          gh release create "${{ env.CRATE_VERSION }}" \
+            --title "${{ env.CRATE_VERSION }}" \
+            --generate-notes \
+            $IS_PRERELEASE
