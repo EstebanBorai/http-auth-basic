@@ -1,6 +1,6 @@
 [package]
 name = "http-auth-basic"
-version = "0.3.6"
+version = "0.3.7"
 authors = ["Esteban Borai <estebanborai@gmail.com>"]
 
 edition = "2024"
