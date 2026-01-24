@@ -1,0 +1,32 @@
+name: build
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build
+        run: cargo b
+
+      - name: Run Formatter Check
+        run: cargo fmt -- --check
+
+      - name: Run Clippy Check
+        run: cargo clippy -- -D warnings
+
+      - name: Run Tests
+        run: cargo test
